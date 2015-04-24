@@ -57,26 +57,26 @@ Where:\n\
 # error Sorry, only little endian machines are supported for now
 #endif
 
-#define PACKED	__attribute__((packed))
+#define PACKED __attribute__((packed))
 
-#define PARTITION_BOOTABLE_FLAG	0x80
+#define PARTITION_BOOTABLE_FLAG 0x80
 #define PARTITION_TYPE          0x83    /* GNU/Linux */
 
 struct PACKED partition_t {
-	uint8_t		bootable_flag;
-	uint8_t		first_sector_chs[3];
-	uint8_t		type;
-	uint8_t		last_sector_chs[3];
-	uint32_t	first_sector_lba;
-	uint32_t	sectors_num_lba;
+    uint8_t     bootable_flag;
+    uint8_t     first_sector_chs[3];
+    uint8_t     type;
+    uint8_t     last_sector_chs[3];
+    uint32_t    first_sector_lba;
+    uint32_t    sectors_num_lba;
 };
 
-#define MBR_BOOT_SIGNATURE		0xAA55
+#define MBR_BOOT_SIGNATURE      0xAA55
 
 struct PACKED mbr_t {
-	uint8_t		        bootstrap[446];
-	struct partition_t  partitions[4];
-	uint16_t            boot_signature;
+    uint8_t             bootstrap[446];
+    struct partition_t  partitions[4];
+    uint16_t            boot_signature;
 };
 
 void
@@ -84,29 +84,30 @@ print_usage() {
     write(STDERR_FILENO, usage_str, sizeof(usage_str));
 }
 
-void mbr_init(struct mbr_t *mbr) {
+void
+mbr_init(struct mbr_t *mbr) {
     memset(mbr, 0, sizeof(struct mbr_t));
     mbr->boot_signature = MBR_BOOT_SIGNATURE;
 }
 
 int
 main(int argc, char *argv[]) {
-	struct mbr_t    mbr;
-	int             argn;
-	int             partn       = 0;
-	const char     *blkdev      = argv[1];
+    struct mbr_t    mbr;
+    int             argn;
+    int             partn       = 0;
+    const char     *blkdev      = argv[1];
     int             blkdev_fd   = -1;
     unsigned long   blkdev_size = 0;
     int             ret;
     unsigned long   start;
     unsigned long   size;
-    unsigned long   next = 1;
+    unsigned long   next        = 1;
     struct stat     st;
 
-	if(argc < 4 || argc % 2 != 0) {
-		print_usage();
-		return EINVAL;
-	}
+    if(argc < 4 || argc % 2 != 0) {
+        print_usage();
+        return EINVAL;
+    }
 
     blkdev_fd = open(blkdev, O_RDWR);
     if(blkdev_fd < 0)
